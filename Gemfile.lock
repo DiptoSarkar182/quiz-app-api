@@ -110,6 +110,13 @@ GEM
       logger
       zeitwerk (~> 2.6)
     erubi (1.13.0)
+    faker (3.5.1)
+      i18n (>= 1.8.11, < 2)
+    ffi (1.17.0-aarch64-linux-gnu)
+    ffi (1.17.0-arm-linux-gnu)
+    ffi (1.17.0-arm64-darwin)
+    ffi (1.17.0-x86-linux-gnu)
+    ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
     globalid (1.2.1)
       activesupport (>= 6.1)
@@ -289,6 +296,7 @@ DEPENDENCIES
   debug
   devise
   devise-jwt
+  faker (~> 3.5)
   image_processing (~> 1.2)
   jsonapi-serializer
   pg (~> 1.1)
