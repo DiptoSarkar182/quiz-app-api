@@ -31,7 +31,7 @@ class FriendRequestsController < ApplicationController
     if received_requests.any?
       render json: received_requests
     else
-      render json: { message: "No friends request" }
+      render json: { message: "No received request" }
     end
   end
 
