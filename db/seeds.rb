@@ -1,19 +1,27 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
-
-require 'faker'
-
-
 # # Seed Users
+#
+# puts "inserting dipto and mr. bean"
+#
+# User.create!(
+#   email: "dipto@gmail.com",
+#   password: '111111',
+#   password_confirmation: '111111',
+#   full_name: "Dipto Sarkar",
+#   created_at: Time.now,
+#   updated_at: Time.now
+# )
+#
+# User.create!(
+#   email: "bean@gmail.com",
+#   password: '111111',
+#   password_confirmation: '111111',
+#   full_name: "Mr. Bean",
+#   created_at: Time.now,
+#   updated_at: Time.now
+# )
+#
 # puts "Seeding Users..."
-# 20.times do
+# 80.times do
 #   User.create!(
 #     email: Faker::Internet.unique.email,
 #     password: '111111',
@@ -24,13 +32,48 @@ require 'faker'
 #   )
 # end
 
-puts "Seeding leaderboard points for each user"
+# puts "Updating leaderboard points for each user"
+#
+# # Update leaderboard entries for existing users
+# User.find_each do |user|
+#   if user.leaderboard
+#     user.leaderboard.update!(
+#       points: Faker::Number.between(from: 1, to: 1000)
+#     )
+#   end
+# end
+#
+# puts "Updated leaderboard points for each user."
 
-User.find_each do |user|
-  Leaderboard.create!(
-    user: user,
-    points: Faker::Number.between(from: 1, to: 1000),
-    created_at: Time.now,
-    updated_at: Time.now
-  )
-end
+# # Dividing the existing users into three groups
+# users = User.all
+# total_users = users.count
+# third_size = total_users / 3
+#
+# # Group users into three: daily, weekly, and monthly
+# daily_users = users[0...third_size]
+# weekly_users = users[third_size...(2 * third_size)]
+# monthly_users = users[(2 * third_size)..-1]
+#
+# # Update leaderboard `updated_at` for daily users (today)
+# daily_users.each do |user|
+#   if user.leaderboard
+#     user.leaderboard.update!(updated_at: Time.zone.now)
+#   end
+# end
+#
+# # Update leaderboard `updated_at` for weekly users (within the past 7 days)
+# weekly_users.each do |user|
+#   if user.leaderboard
+#     user.leaderboard.update!(updated_at: Time.zone.now - rand(1..7).days)
+#   end
+# end
+#
+# # Update leaderboard `updated_at` for monthly users (within the past 30 days)
+# monthly_users.each do |user|
+#   if user.leaderboard
+#     user.leaderboard.update!(updated_at: Time.zone.now - rand(8..30).days)
+#   end
+# end
+#
+# puts "Updated leaderboard timestamps for daily, weekly, and monthly users."
