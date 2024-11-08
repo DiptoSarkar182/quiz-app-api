@@ -77,3 +77,21 @@
 # end
 #
 # puts "Updated leaderboard timestamps for daily, weekly, and monthly users."
+
+
+# # Create 5 random friend for current user dipto (friends)
+# current_user = User.find_by(email: "dipto@gmail.com")
+#
+# # Fetch 5 random users from the database, excluding the current user
+# friends = User.where.not(id: current_user.id).order(Arel.sql('RANDOM()')).limit(5)
+#
+# # Create bidirectional friendships for the selected users
+# friends.each do |friend|
+#   # Add the friend to the current user's friend list
+#   current_user.friend_lists.create!(friend_id: friend.id)
+#
+#   # Add the current user to the friend's friend list
+#   friend.friend_lists.create!(friend_id: current_user.id)
+# end
+#
+# puts "Created 5 friends for user with email dipto@gmail.com"

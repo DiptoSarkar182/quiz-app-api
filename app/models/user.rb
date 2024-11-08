@@ -8,7 +8,9 @@ class User < ApplicationRecord
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   # Association
-  has_one :leaderboard
+  has_one :leaderboard, dependent: :destroy
+  has_many :friend_lists, dependent: :destroy
+  has_many :friends, through: :friend_lists
 
   # After user creation, create the leaderboard with 0 points
   after_create :create_leaderboard_with_default_points

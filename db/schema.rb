@@ -10,9 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_07_113719) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_08_092826) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "friend_lists", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "friend_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["friend_id"], name: "index_friend_lists_on_friend_id"
+    t.index ["user_id", "friend_id"], name: "index_friend_lists_on_user_id_and_friend_id", unique: true
+    t.index ["user_id"], name: "index_friend_lists_on_user_id"
+  end
 
   create_table "leaderboards", force: :cascade do |t|
     t.bigint "user_id", null: false
@@ -49,5 +59,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_07_113719) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
+  add_foreign_key "friend_lists", "users"
+  add_foreign_key "friend_lists", "users", column: "friend_id"
   add_foreign_key "leaderboards", "users"
 end

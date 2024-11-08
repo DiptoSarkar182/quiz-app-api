@@ -28,4 +28,12 @@ Rails.application.routes.draw do
       get :daily_leaderboards
     end
   end
+
+  # friend lists routes
+  resources :friend_lists, only: [:index] do
+    collection do
+      post :add_friend
+      delete :remove_friend
+    end
+  end
 end
