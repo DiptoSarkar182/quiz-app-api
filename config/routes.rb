@@ -42,6 +42,8 @@ Rails.application.routes.draw do
     collection do
       post :send_friend_request
       delete :cancel_friend_request
+      get :current_user_sent_friend_requests
+      get :current_user_received_friend_requests
     end
   end
 end

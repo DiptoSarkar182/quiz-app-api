@@ -2,6 +2,39 @@ class FriendRequestsController < ApplicationController
   before_action :authenticate_user!
   before_action :check_token_expiration
 
+
+  def current_user_sent_friend_requests
+    sent_requests = current_user.sent_friend_requests.map do |request|
+      {
+        id: request.id,
+        receiver_id: request.receiver.id,
+        full_name: request.receiver.full_name
+      }
+    end
+
+    if sent_requests.any?
+      render json: sent_requests
+    else
+      render json: { message: "No sent requests" }
+    end
+  end
+
+  def current_user_received_friend_requests
+    received_requests = current_user.received_friend_requests.map do |request|
+      {
+        request_id: request.id,
+        sender_id: request.sender.id,
+        full_name: request.sender.full_name
+      }
+    end
+
+    if received_requests.any?
+      render json: received_requests
+    else
+      render json: { message: "No friends request" }
+    end
+  end
+
   def send_friend_request
     receiver_id = params[:receiver_id]
     receiver = User.find_by(id: receiver_id)
