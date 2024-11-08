@@ -36,4 +36,12 @@ Rails.application.routes.draw do
       delete :remove_friend
     end
   end
+
+  # friend requests routes
+  resources :friend_requests, only: [] do
+    collection do
+      post :send_friend_request
+      delete :cancel_friend_request
+    end
+  end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_08_092826) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_08_123025) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -22,6 +22,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_08_092826) do
     t.index ["friend_id"], name: "index_friend_lists_on_friend_id"
     t.index ["user_id", "friend_id"], name: "index_friend_lists_on_user_id_and_friend_id", unique: true
     t.index ["user_id"], name: "index_friend_lists_on_user_id"
+  end
+
+  create_table "friend_requests", force: :cascade do |t|
+    t.bigint "sender_id", null: false
+    t.bigint "receiver_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["receiver_id"], name: "index_friend_requests_on_receiver_id"
+    t.index ["sender_id", "receiver_id"], name: "index_friend_requests_on_sender_id_and_receiver_id", unique: true
+    t.index ["sender_id"], name: "index_friend_requests_on_sender_id"
   end
 
   create_table "leaderboards", force: :cascade do |t|
@@ -61,5 +71,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_08_092826) do
 
   add_foreign_key "friend_lists", "users"
   add_foreign_key "friend_lists", "users", column: "friend_id"
+  add_foreign_key "friend_requests", "users", column: "receiver_id"
+  add_foreign_key "friend_requests", "users", column: "sender_id"
   add_foreign_key "leaderboards", "users"
 end
