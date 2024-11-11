@@ -95,3 +95,33 @@
 # end
 #
 # puts "Created 5 friends for user with email dipto@gmail.com"
+
+# # Creating 10 random quiz category
+# unique_titles = Set.new
+#
+# while unique_titles.size < 10
+#   title = Faker::Educator.subject
+#   unique_titles.add(title) unless unique_titles.include?(title)
+# end
+#
+# unique_titles.each do |title|
+#   Category.create(title: title)
+# end
+#
+# puts "10 unique quiz categories created!"
+
+# # Creating some unique sub-category
+# Category.find_each do |category|
+#   unique_sub_titles = Set.new
+#
+#   while unique_sub_titles.size < 10
+#     sub_title = Faker::Educator.course_name
+#     unique_sub_titles.add(sub_title) unless unique_sub_titles.include?(sub_title)
+#   end
+#
+#   unique_sub_titles.each do |sub_title|
+#     SubCategory.create(category_id: category.id, title: sub_title)
+#   end
+# end
+#
+# puts "10 unique subcategories created for each category!"

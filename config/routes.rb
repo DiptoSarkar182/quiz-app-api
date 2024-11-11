@@ -46,4 +46,10 @@ Rails.application.routes.draw do
       get :current_user_received_friend_requests
     end
   end
+
+  # categories routes
+  resources :categories
+
+  # sub_categories routes
+  resources :sub_categories
 end
