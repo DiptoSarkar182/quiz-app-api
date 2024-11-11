@@ -44,6 +44,7 @@ Rails.application.routes.draw do
       delete :cancel_friend_request
       get :current_user_sent_friend_requests
       get :current_user_received_friend_requests
+      delete :decline_friend_request
     end
   end
 

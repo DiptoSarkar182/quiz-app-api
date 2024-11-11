@@ -94,4 +94,26 @@ class FriendRequestsController < ApplicationController
     end
   end
 
+  def decline_friend_request
+    sender_id = params[:sender_id]
+    sender = User.find_by(id: sender_id)
+
+    if sender.nil?
+      return render json: { message: "The user you are trying to decline the request from does not exist" }, status: :not_found
+    end
+
+    friend_request = current_user.received_friend_requests.find_by(sender_id: sender_id)
+
+    if friend_request.nil?
+      return render json: { message: "No friend request found to decline" }, status: :not_found
+    end
+
+    if friend_request.destroy
+      render json: { message: "Friend request declined successfully" }, status: :ok
+    else
+      render json: { message: "Failed to decline the friend request", errors: friend_request.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+
 end
