@@ -53,4 +53,11 @@ Rails.application.routes.draw do
 
   # sub_categories routes
   resources :sub_categories
+
+  # settings routes
+  resources :settings, only: [:index] do
+    collection do
+      patch :update_settings
+    end
+  end
 end

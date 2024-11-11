@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_11_064139) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_11_093113) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -46,6 +46,16 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_064139) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_leaderboards_on_user_id"
+  end
+
+  create_table "settings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.boolean "daily_update"
+    t.boolean "new_topic"
+    t.boolean "new_tournament"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_settings_on_user_id"
   end
 
   create_table "sub_categories", force: :cascade do |t|
@@ -88,5 +98,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_11_064139) do
   add_foreign_key "friend_requests", "users", column: "receiver_id"
   add_foreign_key "friend_requests", "users", column: "sender_id"
   add_foreign_key "leaderboards", "users"
+  add_foreign_key "settings", "users"
   add_foreign_key "sub_categories", "categories"
 end
