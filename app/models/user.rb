@@ -14,6 +14,8 @@ class User < ApplicationRecord
   has_many :received_friend_requests, class_name: "FriendRequest", foreign_key: "receiver_id", dependent: :destroy
   has_many :friend_lists, dependent: :destroy
   has_many :friends, through: :friend_lists
+  has_many :sub_category_followers, dependent: :destroy
+  has_many :sub_categories, through: :sub_category_followers
 
   # After user creation, create the leaderboard with 0 points
   after_create :create_leaderboard_with_default_points

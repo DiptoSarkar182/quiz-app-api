@@ -60,4 +60,11 @@ Rails.application.routes.draw do
       patch :update_settings
     end
   end
+
+  resources :sub_category_followers, only: [] do
+    collection do
+      post :follow
+      delete :unfollow
+    end
+  end
 end
