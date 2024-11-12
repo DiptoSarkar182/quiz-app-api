@@ -61,10 +61,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # sub category follower routes
   resources :sub_category_followers, only: [] do
     collection do
       post :follow
       delete :unfollow
     end
   end
+
+  resources :find_friends
 end

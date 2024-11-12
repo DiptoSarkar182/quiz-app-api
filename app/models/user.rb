@@ -7,6 +7,14 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["full_name", "email"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["friend_lists", "friends", "leaderboard", "received_friend_requests", "sent_friend_requests", "setting", "sub_categories", "sub_category_followers"]
+  end
+
   # Association
   has_one :leaderboard, dependent: :destroy
   has_one :setting, dependent: :destroy
@@ -17,7 +25,6 @@ class User < ApplicationRecord
   has_many :sub_category_followers, dependent: :destroy
   has_many :sub_categories, through: :sub_category_followers
 
-  # After user creation, create the leaderboard with 0 points
   after_create :create_leaderboard_with_default_points
   after_create :create_default_settings
 
