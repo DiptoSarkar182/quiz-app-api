@@ -125,3 +125,20 @@ Category.find_each do |category|
 end
 
 puts "10 unique subcategories created for each category!"
+
+puts "randomly populating sub category leaderboard"
+users = User.all
+sub_categories = SubCategory.all
+
+users.each do |user|
+  sub_categories.each do |sub_category|
+    points = Faker::Number.between(from: 0, to: 1000)
+    SubCategoryLeaderboard.create!(
+      user: user,
+      sub_category: sub_category,
+      sub_category_points: points
+    )
+  end
+end
+
+puts "Populated sub_category_leaderboards with random points for each user and subcategory."

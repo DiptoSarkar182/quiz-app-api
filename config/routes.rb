@@ -69,10 +69,15 @@ Rails.application.routes.draw do
     end
   end
 
+  # find friends routes
   resources :find_friends
 
+  # otp routes
   namespace :users do
     post 'validate_otp', to: 'confirmations#validate_otp'
     post 'resend_otp', to: 'confirmations#resend_otp'
   end
+
+  # sub category leaderboard routes
+  resources :sub_category_leaderboards
 end
