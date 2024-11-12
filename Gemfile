@@ -45,3 +45,4 @@ gem 'devise'
 gem 'devise-jwt'
 gem 'jsonapi-serializer'
 gem "faker", "~> 3.5"
+gem "letter_opener", group: :development
