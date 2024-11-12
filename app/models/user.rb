@@ -9,7 +9,7 @@ class User < ApplicationRecord
 
   # Association
   has_one :leaderboard, dependent: :destroy
-  has_one :setting
+  has_one :setting, dependent: :destroy
   has_many :sent_friend_requests, class_name: "FriendRequest", foreign_key: "sender_id", dependent: :destroy
   has_many :received_friend_requests, class_name: "FriendRequest", foreign_key: "receiver_id", dependent: :destroy
   has_many :friend_lists, dependent: :destroy

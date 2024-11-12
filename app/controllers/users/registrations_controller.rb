@@ -1,6 +1,19 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
 
+
+  def destroy
+    if resource.destroy
+      render json: {
+        status: { code: 200, message: 'User account deleted successfully.' }
+      }, status: :ok
+    else
+      render json: {
+        status: { message: "User account couldn't be deleted. #{resource.errors.full_messages.to_sentence}" }
+      }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def respond_with(resource, _opts = {})
