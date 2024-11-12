@@ -4,7 +4,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable,
+         :recoverable, :rememberable, :validatable, :confirmable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   def self.ransackable_attributes(auth_object = nil)
@@ -13,6 +13,16 @@ class User < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["friend_lists", "friends", "leaderboard", "received_friend_requests", "sent_friend_requests", "setting", "sub_categories", "sub_category_followers"]
+  end
+
+  OTP_LENGTH = 6
+
+  def send_confirmation_instructions
+    token = SecureRandom.random_number(10**OTP_LENGTH).to_s.rjust(OTP_LENGTH, "0")
+    self.confirmation_token = token
+    self.confirmation_sent_at = Time.now.utc
+    save(validate: false)
+    UserMailer.confirmation_instructions(self, self.confirmation_token).deliver_now
   end
 
   # Association

@@ -70,4 +70,9 @@ Rails.application.routes.draw do
   end
 
   resources :find_friends
+
+  namespace :users do
+    post 'validate_otp', to: 'confirmations#validate_otp'
+    post 'resend_otp', to: 'confirmations#resend_otp'
+  end
 end
