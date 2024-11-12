@@ -80,4 +80,7 @@ Rails.application.routes.draw do
 
   # sub category leaderboard routes
   resources :sub_category_leaderboards
+
+  # user profile infos routes
+  resources :user_profile_infos
 end
