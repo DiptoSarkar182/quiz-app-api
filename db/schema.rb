@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_12_102821) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_13_085603) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -86,6 +86,26 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_12_102821) do
     t.index ["user_id"], name: "index_sub_category_leaderboards_on_user_id"
   end
 
+  create_table "sub_category_quizzes", force: :cascade do |t|
+    t.bigint "sub_category_id", null: false
+    t.string "quiz_question", default: "", null: false
+    t.jsonb "quiz_options", default: []
+    t.integer "correct_answer_index", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sub_category_id"], name: "index_sub_category_quizzes_on_sub_category_id"
+  end
+
+  create_table "user_question_histories", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "sub_category_quiz_id", null: false
+    t.boolean "is_correct_answer"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["sub_category_quiz_id"], name: "index_user_question_histories_on_sub_category_quiz_id"
+    t.index ["user_id"], name: "index_user_question_histories_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -124,4 +144,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_12_102821) do
   add_foreign_key "sub_category_followers", "users"
   add_foreign_key "sub_category_leaderboards", "sub_categories"
   add_foreign_key "sub_category_leaderboards", "users"
+  add_foreign_key "sub_category_quizzes", "sub_categories"
+  add_foreign_key "user_question_histories", "sub_category_quizzes"
+  add_foreign_key "user_question_histories", "users"
 end

@@ -88,4 +88,10 @@ Rails.application.routes.draw do
 
   # user profile infos routes
   resources :user_profile_infos
+
+  resources :sub_category_quizzes, only: [:index] do
+    collection do
+      post :answer
+    end
+  end
 end

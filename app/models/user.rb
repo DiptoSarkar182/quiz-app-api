@@ -35,6 +35,7 @@ class User < ApplicationRecord
   has_many :sub_category_followers, dependent: :destroy
   has_many :sub_categories, through: :sub_category_followers
   has_many :sub_category_leaderboards, dependent: :destroy
+  has_many :user_question_histories, dependent: :destroy
 
   after_create :create_leaderboard_with_default_points
   after_create :create_default_settings
