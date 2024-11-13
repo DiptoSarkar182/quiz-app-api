@@ -14,4 +14,14 @@ class SubCategoriesController < ApplicationController
       render json: { error: "Category not found" }, status: :not_found
     end
   end
+
+  def top_sub_categories
+    @top_sub_categories = SubCategory.where("total_follower > 0").order(total_follower: :desc).limit(10)
+
+    if @top_sub_categories.any?
+      render json: @top_sub_categories, status: :ok
+    else
+      render json: { message: "No top sub category" }, status: :ok
+    end
+  end
 end

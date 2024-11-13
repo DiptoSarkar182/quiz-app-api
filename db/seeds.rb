@@ -142,39 +142,40 @@
 # end
 #
 # puts "Populated sub_category_leaderboards with random points for each user and subcategory."
+#
+# require 'net/http'
+# require 'json'
+#
+# # Fetch quiz questions from Open Trivia Database
+# url = URI.parse('https://opentdb.com/api.php?amount=10&type=multiple')
+# response = Net::HTTP.get(url)
+# quiz_data = JSON.parse(response)
+#
+# # Ensure you have enough questions for each subcategory
+# if quiz_data['results'].length < 3
+#   raise 'Not enough quiz questions retrieved from the API'
+# end
+#
+# # Create 3 quizzes for each subcategory
+# SubCategory.find_each do |sub_category|
+#   # Select 3 random questions for each subcategory
+#   10.times do
+#     quiz_item = quiz_data['results'].sample # Randomly select a quiz question
+#
+#     # Shuffle the incorrect answers and add the correct answer at a random position
+#     all_options = quiz_item['incorrect_answers'] + [quiz_item['correct_answer']]
+#     shuffled_options = all_options.shuffle
+#
+#     # Find the correct answer index after shuffling
+#     correct_answer_index = shuffled_options.index(quiz_item['correct_answer'])
+#
+#     sub_category.sub_category_quizzes.create!(
+#       quiz_question: quiz_item['question'],
+#       quiz_options: shuffled_options,
+#       correct_answer_index: correct_answer_index
+#     )
+#   end
+# end
+#
+# puts "10 quizzes created for each subcategory from Open Trivia Database."
 
-require 'net/http'
-require 'json'
-
-# Fetch quiz questions from Open Trivia Database
-url = URI.parse('https://opentdb.com/api.php?amount=10&type=multiple')
-response = Net::HTTP.get(url)
-quiz_data = JSON.parse(response)
-
-# Ensure you have enough questions for each subcategory
-if quiz_data['results'].length < 3
-  raise 'Not enough quiz questions retrieved from the API'
-end
-
-# Create 3 quizzes for each subcategory
-SubCategory.find_each do |sub_category|
-  # Select 3 random questions for each subcategory
-  10.times do
-    quiz_item = quiz_data['results'].sample # Randomly select a quiz question
-
-    # Shuffle the incorrect answers and add the correct answer at a random position
-    all_options = quiz_item['incorrect_answers'] + [quiz_item['correct_answer']]
-    shuffled_options = all_options.shuffle
-
-    # Find the correct answer index after shuffling
-    correct_answer_index = shuffled_options.index(quiz_item['correct_answer'])
-
-    sub_category.sub_category_quizzes.create!(
-      quiz_question: quiz_item['question'],
-      quiz_options: shuffled_options,
-      correct_answer_index: correct_answer_index
-    )
-  end
-end
-
-puts "10 quizzes created for each subcategory from Open Trivia Database."

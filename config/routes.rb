@@ -53,7 +53,11 @@ Rails.application.routes.draw do
   resources :categories
 
   # sub_categories routes
-  resources :sub_categories
+  resources :sub_categories, only: [:index] do
+    collection do
+      get :top_sub_categories
+    end
+  end
 
   # settings routes
   resources :settings, only: [:index] do
@@ -89,6 +93,7 @@ Rails.application.routes.draw do
   # user profile infos routes
   resources :user_profile_infos
 
+  # sub category quizzes routes
   resources :sub_category_quizzes, only: [:index] do
     collection do
       post :answer
