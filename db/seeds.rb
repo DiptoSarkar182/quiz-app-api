@@ -44,7 +44,7 @@
 # end
 #
 # puts "Updated leaderboard points for each user."
-#
+# #
 # # Dividing the existing users into three groups
 # users = User.all
 # total_users = users.count
@@ -77,7 +77,6 @@
 # end
 #
 # puts "Updated leaderboard timestamps for daily, weekly, and monthly users."
-#
 #
 # # Create 5 random friend for current user dipto (friends)
 # current_user = User.find_by(email: "dipto@gmail.com")
@@ -178,4 +177,4 @@
 # end
 #
 # puts "10 quizzes created for each subcategory from Open Trivia Database."
-
+#

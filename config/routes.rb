@@ -21,12 +21,8 @@ Rails.application.routes.draw do
   # leaderboards routes
   resources :leaderboards, only: [] do
     collection do
-      get :monthly_top_three_users
-      get :monthly_leaderboards
-      get :weekly_top_three_users
-      get :weekly_leaderboards
-      get :daily_top_three_users
-      get :daily_leaderboards
+      get :top_three_users, path: "top-three"
+      get :leaderboards, path: "all"
     end
   end
 
