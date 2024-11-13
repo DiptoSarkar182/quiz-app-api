@@ -36,16 +36,29 @@ class SubCategoryQuizzesController < ApplicationController
 
     is_correct_answer = (quiz.correct_answer_index == user_answer_index)
 
-    user_question_history = UserQuestionHistory.create(
-      user_id: current_user.id,
-      sub_category_quiz_id: sub_category_quiz_id,
-      is_correct_answer: is_correct_answer
-    )
+    ActiveRecord::Base.transaction do
+      UserQuestionHistory.create!(
+        user_id: current_user.id,
+        sub_category_quiz_id: sub_category_quiz_id,
+        is_correct_answer: is_correct_answer
+      )
 
-    if user_question_history.persisted?
-      render json: { message: "Answer submitted successfully", is_correct_answer: is_correct_answer }, status: :ok
-    else
-      render json: { error: "Failed to save user answer" }, status: :unprocessable_entity
+      if is_correct_answer
+        sub_category_leaderboard = SubCategoryLeaderboard.find_or_initialize_by(
+          user_id: current_user.id,
+          sub_category_id: quiz.sub_category_id
+        )
+        sub_category_leaderboard.sub_category_points += 3
+        sub_category_leaderboard.save!
+
+        leaderboard = Leaderboard.find_or_initialize_by(user_id: current_user.id)
+        leaderboard.points += 3
+        leaderboard.save!
+      end
     end
+
+    render json: { message: "Answer submitted successfully", is_correct_answer: is_correct_answer }, status: :ok
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: "Failed to save user answer", details: e.message }, status: :unprocessable_entity
   end
 end
