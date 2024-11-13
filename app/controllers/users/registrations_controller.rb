@@ -1,6 +1,7 @@
 class Users::RegistrationsController < Devise::RegistrationsController
   respond_to :json
-
+  before_action :authenticate_user!, only: [:update, :destroy]
+  before_action :check_token_expiration, only: [:update, :destroy]
 
   def destroy
     if resource.destroy
@@ -13,6 +14,21 @@ class Users::RegistrationsController < Devise::RegistrationsController
       }, status: :unprocessable_entity
     end
   end
+
+  def update
+    if resource.update_with_password(resource_params)
+      render json: {
+        status: { code: 200, message: 'User information updated successfully.',
+                  data: UserSerializer.new(resource).serializable_hash[:data][:attributes] }
+      }, status: :ok
+    else
+      render json: {
+        status: { message: "User information couldn't be updated. #{resource.errors.full_messages.to_sentence}" }
+      }, status: :unprocessable_entity
+    end
+  end
+
+
 
   private
 
@@ -31,5 +47,9 @@ class Users::RegistrationsController < Devise::RegistrationsController
         status: { message: "User couldn't be created successfully. #{resource.errors.full_messages.to_sentence}" }
       }, status: :unprocessable_entity
     end
+  end
+
+  def resource_params
+    params.require(:user).permit(:full_name, :email, :password, :password_confirmation, :current_password)
   end
 end
