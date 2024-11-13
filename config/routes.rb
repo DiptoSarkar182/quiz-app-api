@@ -74,8 +74,12 @@ Rails.application.routes.draw do
 
   # otp routes
   namespace :users do
-    post 'validate_otp', to: 'confirmations#validate_otp'
-    post 'resend_otp', to: 'confirmations#resend_otp'
+    resources :confirmations, only: [] do
+      collection do
+        post :validate_otp
+        post :resend_otp
+      end
+    end
   end
 
   # sub category leaderboard routes
