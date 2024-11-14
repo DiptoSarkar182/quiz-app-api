@@ -42,6 +42,7 @@ Rails.application.routes.draw do
       get :current_user_sent_friend_requests
       get :current_user_received_friend_requests
       delete :decline_friend_request
+      get :find_friend
     end
   end
 
@@ -69,9 +70,6 @@ Rails.application.routes.draw do
       delete :unfollow
     end
   end
-
-  # find friends routes
-  resources :find_friends
 
   # otp routes
   namespace :users do

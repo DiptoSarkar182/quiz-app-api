@@ -4,7 +4,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :confirmable,
+         :recoverable, :rememberable, :validatable,
          :jwt_authenticatable, jwt_revocation_strategy: self
 
   def self.ransackable_attributes(auth_object = nil)
@@ -39,6 +39,10 @@ class User < ApplicationRecord
 
   after_create :create_leaderboard_with_default_points
   after_create :create_default_settings
+
+  def self.search_by_full_name_or_email(query)
+    User.ransack(full_name_or_email_cont: query).result(distinct: true).select(:id, :full_name, :level)
+  end
 
   private
 
