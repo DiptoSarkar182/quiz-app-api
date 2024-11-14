@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_13_085603) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_14_082642) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -133,8 +133,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_13_085603) do
     t.index ["unlock_token"], name: "index_users_on_unlock_token", unique: true
   end
 
-  add_foreign_key "friend_lists", "users"
-  add_foreign_key "friend_lists", "users", column: "friend_id"
+  add_foreign_key "friend_lists", "users", column: "friend_id", on_delete: :cascade
+  add_foreign_key "friend_lists", "users", on_delete: :cascade
   add_foreign_key "friend_requests", "users", column: "receiver_id"
   add_foreign_key "friend_requests", "users", column: "sender_id"
   add_foreign_key "leaderboards", "users"
