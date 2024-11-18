@@ -3,8 +3,7 @@ class LeaderboardsController < ApplicationController
   before_action :check_token_expiration
 
   def top_three_users
-    time_range = determine_time_range(params[:range])
-    @top_three_users = Leaderboard.top_three_users(time_range)
+    @top_three_users = Leaderboard.top_three_users(params[:range])
 
     if @top_three_users.any?
       render json: @top_three_users
@@ -14,8 +13,7 @@ class LeaderboardsController < ApplicationController
   end
 
   def leaderboards
-    time_range = determine_time_range(params[:range])
-    @leaderboards = Leaderboard.leaderboards_excluding_top_three(time_range)
+    @leaderboards = Leaderboard.leaderboards_excluding_top_three(params[:range])
 
     if @leaderboards.any?
       render json: @leaderboards
@@ -24,17 +22,4 @@ class LeaderboardsController < ApplicationController
     end
   end
 
-  private
-  def determine_time_range(range)
-    case range
-    when "daily"
-      1.day.ago
-    when "weekly"
-      7.days.ago
-    when "monthly"
-      30.days.ago
-    else
-      30.days.ago
-    end
-  end
 end
