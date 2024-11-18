@@ -44,6 +44,22 @@ class User < ApplicationRecord
     User.ransack(full_name_or_email_cont: query).result(distinct: true).select(:id, :full_name, :level)
   end
 
+  def self.get_profile_info(user_id)
+    user = find_by(id: user_id)
+    return nil unless user
+
+    total_points = user.leaderboard.points
+    highest_point = user.sub_category_leaderboards.maximum(:sub_category_points) || 0
+
+    {
+      id: user.id,
+      full_name: user.full_name,
+      level: user.level,
+      total_points: total_points,
+      highest_point_on_particular_subcategory: highest_point
+    }
+  end
+
   private
 
   def create_leaderboard_with_default_points
