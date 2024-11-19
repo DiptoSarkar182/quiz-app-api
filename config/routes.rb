@@ -50,7 +50,7 @@ Rails.application.routes.draw do
   resources :categories
 
   # sub_categories routes
-  resources :sub_categories, only: [:index] do
+  resources :sub_categories, only: [:index, :create] do
     collection do
       get :top_sub_categories
     end

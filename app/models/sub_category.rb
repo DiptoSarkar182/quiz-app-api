@@ -21,4 +21,13 @@ class SubCategory < ApplicationRecord
     where("total_follower > 0").order(total_follower: :desc).limit(10)
   end
 
+  def self.create_sub_category(sub_category_params)
+    sub_category = SubCategory.new(sub_category_params)
+    if sub_category.save
+      { status: :ok, message: "Sub category created successfully", data: sub_category }
+    else
+      { status: :unprocessable_entity, message: "Failed to create sub category", errors: category.errors.full_messages }
+    end
+  end
+
 end
