@@ -24,7 +24,8 @@ class SubCategoryQuizzesController < ApplicationController
   end
 
   def update_sub_category_quiz
-    result = SubCategoryQuiz.update_sub_category_quiz(update_sub_category_quiz_params)
+    sub_category_quiz_params_with_extra = sub_category_quiz_params.merge(sub_category_quiz_id: params[:sub_category_quiz][:sub_category_quiz_id])
+    result = SubCategoryQuiz.update_sub_category_quiz(sub_category_quiz_params_with_extra)
 
     if result[:status] == :ok
       render json: { message: result[:message], data: result[:data] }, status: :ok
@@ -59,9 +60,5 @@ class SubCategoryQuizzesController < ApplicationController
   private
   def sub_category_quiz_params
     params.require(:sub_category_quiz).permit(:sub_category_id, :quiz_question, :correct_answer_index, quiz_options: [])
-  end
-
-  def update_sub_category_quiz_params
-    params.require(:sub_category_quiz).permit(:sub_category_quiz_id, :sub_category_id, :quiz_question, :correct_answer_index, quiz_options: [])
   end
 end
