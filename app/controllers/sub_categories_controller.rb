@@ -23,6 +23,34 @@ class SubCategoriesController < ApplicationController
     end
   end
 
+  def show_sub_category
+    result = SubCategory.show_sub_category(params[:sub_category_id])
+    if result[:status] == :ok
+      render json: result[:data], status: :ok
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
+  end
+
+  def update_sub_category
+    result = SubCategory.update_sub_category(update_sub_category_params)
+
+    if result[:status] == :ok
+      render json: { message: result[:message], data: result[:data] }, status: :ok
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
+  end
+
+  def delete_sub_category
+    result = SubCategory.delete_sub_category(params[:sub_category_id])
+    if result[:status] == :ok
+      render json: { message: result[:message] }, status: :ok
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
+  end
+
   def top_sub_categories
     result = SubCategory.top_sub_categories_list
 
@@ -36,5 +64,9 @@ class SubCategoriesController < ApplicationController
   private
   def sub_category_params
     params.require(:sub_category).permit(:category_id, :title)
+  end
+
+  def update_sub_category_params
+    params.require(:sub_category).permit(:sub_category_id, :category_id, :title)
   end
 end

@@ -35,4 +35,45 @@ class SubCategory < ApplicationRecord
     end
   end
 
+  def self.show_sub_category(sub_category_id)
+    sub_category = SubCategory.find_by(id: sub_category_id)
+
+    if sub_category
+      data = SubCategorySerializers::ShowSubCategorySerializer.new(sub_category).serializable_hash[:data][:attributes]
+      { status: :ok, data: data }
+    else
+      render json: { message: "Sub category not found" }, status: :not_found
+    end
+  end
+
+  def self.update_sub_category(update_sub_category_params)
+    sub_category_id = update_sub_category_params[:sub_category_id]
+    category_id = update_sub_category_params[:category_id]
+
+    sub_category = SubCategory.find_by(id: sub_category_id)
+    return { status: :not_found, message: "Sub category not found!" } if sub_category.nil?
+
+    category = Category.find_by(id: category_id)
+    return { status: :not_found, message: "Category not found!" } if category.nil?
+
+    if sub_category.update(update_sub_category_params.except(:sub_category_id))
+      { status: :ok, message: "Sub category updated successfully", data: sub_category }
+    else
+      { status: :unprocessable_entity, message: "Failed to update sub category", errors: sub_category.errors.full_messages }
+    end
+  end
+
+  def self.delete_sub_category(sub_category_id)
+    sub_category = SubCategory.find_by(id: sub_category_id)
+    if sub_category
+      if sub_category.destroy
+        { status: :ok, message: "Sub category deleted successfully"}
+      else
+        { status: :unprocessable_entity, message: "Failed to delete sub category", errors: category.errors.full_messages }
+      end
+    else
+      { status: :not_found, message: "Sub category not found!" }
+    end
+  end
+
 end

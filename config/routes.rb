@@ -59,6 +59,9 @@ Rails.application.routes.draw do
   resources :sub_categories, only: [:index, :create] do
     collection do
       get :top_sub_categories
+      get :show_sub_category
+      patch :update_sub_category
+      delete :delete_sub_category
     end
   end
 
