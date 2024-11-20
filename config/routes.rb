@@ -97,9 +97,11 @@ Rails.application.routes.draw do
   resources :user_profile_infos
 
   # sub category quizzes routes
-  resources :sub_category_quizzes, only: [:index] do
+  resources :sub_category_quizzes, only: [:index, :create] do
     collection do
       post :answer
+      patch :update_sub_category_quiz
+      delete :delete_sub_category_quiz
     end
   end
 end

@@ -2,11 +2,55 @@ class SubCategoryQuiz < ApplicationRecord
   belongs_to :sub_category
   has_many :user_question_histories, dependent: :destroy
 
+  validates :quiz_question, presence: true
+  validates :quiz_options, presence: true, length: { is: 4 }
+  validates :correct_answer_index, presence: true
+
   def self.get_random_quiz(sub_category_id)
     sub_category = SubCategory.find_by(id: sub_category_id)
     return nil unless sub_category
 
     sub_category.sub_category_quizzes.order("RANDOM()").first
+  end
+
+  def self.create_sub_category_quiz(params)
+    sub_category = SubCategory.find_by(id: params[:sub_category_id])
+    return { status: :not_found, message: "Sub category not found!" } if sub_category.nil?
+
+    sub_category_quiz = SubCategoryQuiz.new(params)
+
+    if sub_category_quiz.save
+      { status: :ok, message: "Quiz created successfully", data: sub_category_quiz }
+    else
+      { status: :unprocessable_entity, message: "Failed to create quiz", errors: sub_category_quiz.errors.full_messages }
+    end
+  end
+
+  def self.update_sub_category_quiz(params)
+    sub_category_quiz = SubCategoryQuiz.find_by(id: params[:sub_category_quiz_id])
+    return { status: :not_found, message: "Sub category quiz not found!" } if sub_category_quiz.nil?
+
+    sub_category = SubCategory.find_by(id: params[:sub_category_id])
+    return { status: :not_found, message: "Sub category not found!" } if sub_category.nil?
+
+    if sub_category_quiz.update(params.except(:sub_category_quiz_id))
+      { status: :ok, message: "Sub category quiz updated successfully", data: sub_category_quiz }
+    else
+      { status: :unprocessable_entity, message: "Failed to update sub category quiz", errors: sub_category_quiz.errors.full_messages }
+    end
+  end
+
+  def self.delete_sub_category_quiz(sub_category_quiz_id)
+    sub_category_quiz = SubCategoryQuiz.find_by(id: sub_category_quiz_id)
+    if sub_category_quiz
+      if sub_category_quiz.destroy
+        { status: :ok, message: "Sub category quiz deleted successfully"}
+      else
+        { status: :unprocessable_entity, message: "Failed to delete sub category quiz", errors: sub_category_quiz.errors.full_messages }
+      end
+    else
+      { status: :not_found, message: "Sub category quiz not found!" }
+    end
   end
 
   def self.submit_answer(user, sub_category_quiz_id, user_answer_index)
