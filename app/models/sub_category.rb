@@ -65,14 +65,12 @@ class SubCategory < ApplicationRecord
 
   def self.delete_sub_category(sub_category_id)
     sub_category = SubCategory.find_by(id: sub_category_id)
-    if sub_category
-      if sub_category.destroy
-        { status: :ok, message: "Sub category deleted successfully"}
-      else
-        { status: :unprocessable_entity, message: "Failed to delete sub category", errors: category.errors.full_messages }
-      end
+    return { status: :not_found, message: "Sub category not found!" } unless sub_category
+
+    if sub_category.destroy
+      { status: :ok, message: "Sub category deleted successfully" }
     else
-      { status: :not_found, message: "Sub category not found!" }
+      { status: :unprocessable_entity, message: "Failed to delete sub category", errors: sub_category.errors.full_messages }
     end
   end
 

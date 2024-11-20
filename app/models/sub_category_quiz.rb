@@ -49,14 +49,12 @@ class SubCategoryQuiz < ApplicationRecord
 
   def self.delete_sub_category_quiz(sub_category_quiz_id)
     sub_category_quiz = SubCategoryQuiz.find_by(id: sub_category_quiz_id)
-    if sub_category_quiz
-      if sub_category_quiz.destroy
-        { status: :ok, message: "Sub category quiz deleted successfully"}
-      else
-        { status: :unprocessable_entity, message: "Failed to delete sub category quiz", errors: sub_category_quiz.errors.full_messages }
-      end
+    return { status: :not_found, message: "Sub category quiz not found!" } unless sub_category_quiz
+
+    if sub_category_quiz.destroy
+      { status: :ok, message: "Sub category quiz deleted successfully" }
     else
-      { status: :not_found, message: "Sub category quiz not found!" }
+      { status: :unprocessable_entity, message: "Failed to delete sub category quiz", errors: sub_category_quiz.errors.full_messages }
     end
   end
 
