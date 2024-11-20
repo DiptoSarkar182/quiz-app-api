@@ -4,17 +4,12 @@ class SubCategoryQuizzesController < ApplicationController
 
   def index
     sub_category_id = params[:sub_category_id]
-    quiz = SubCategoryQuiz.get_random_quiz(sub_category_id)
+    result = SubCategoryQuiz.get_random_quiz(sub_category_id)
 
-    if quiz
-      render json: {
-        id: quiz.id,
-        sub_category_id: quiz.sub_category.id,
-        quiz_question: quiz.quiz_question,
-        quiz_options: quiz.quiz_options,
-      }
+    if result[:status] == :ok
+      render json: result[:data], status: :ok
     else
-      render json: { error: "No quiz found for this subcategory" }, status: :not_found
+      render json: { message: result[:message], errors: result[:errors] }, status: result[:status]
     end
   end
 
@@ -32,7 +27,7 @@ class SubCategoryQuizzesController < ApplicationController
     result = SubCategoryQuiz.update_sub_category_quiz(update_sub_category_quiz_params)
 
     if result[:status] == :ok
-      render json: { message: result[:message], data: result[:data] }, status: :created
+      render json: { message: result[:message], data: result[:data] }, status: :ok
     else
       render json: { message: result[:message], errors: result[:errors] }, status: result[:status]
     end
@@ -42,7 +37,7 @@ class SubCategoryQuizzesController < ApplicationController
     result = SubCategoryQuiz.delete_sub_category_quiz(params[:sub_category_quiz_id])
 
     if result[:status] == :ok
-      render json: { message: result[:message]}, status: :created
+      render json: { message: result[:message]}, status: :ok
     else
       render json: { message: result[:message] }, status: result[:status]
     end

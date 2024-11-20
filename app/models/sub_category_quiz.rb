@@ -8,10 +8,17 @@ class SubCategoryQuiz < ApplicationRecord
 
   def self.get_random_quiz(sub_category_id)
     sub_category = SubCategory.find_by(id: sub_category_id)
-    return nil unless sub_category
+    return { status: :not_found, message: "Sub category not found" } unless sub_category
 
-    sub_category.sub_category_quizzes.order("RANDOM()").first
+    quiz = sub_category.sub_category_quizzes.order("RANDOM()").first
+    if quiz
+      data = SubCategoryQuizSerializers::QuizSerializer.new(quiz).serializable_hash[:data][:attributes]
+      { status: :ok, data: data }
+    else
+      { status: :not_found, message: "No quizzes found for this sub category" }
+    end
   end
+
 
   def self.create_sub_category_quiz(params)
     sub_category = SubCategory.find_by(id: params[:sub_category_id])
