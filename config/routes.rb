@@ -47,7 +47,13 @@ Rails.application.routes.draw do
   end
 
   # categories routes
-  resources :categories
+  resources :categories, only: [:index, :create] do
+    collection do
+      get :show_category
+      patch :update_category
+      delete :delete_category
+    end
+  end
 
   # sub_categories routes
   resources :sub_categories, only: [:index, :create] do
