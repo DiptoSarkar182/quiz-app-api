@@ -36,7 +36,7 @@ class CategoriesController < ApplicationController
     result = Category.update_category(update_category_params)
 
     if result[:status] == :ok
-      render json: { message: result[:message], data: result[:data] }, status: :created
+      render json: { message: result[:message], data: result[:data] }, status: :ok
     else
       render json: { message: result[:message] }, status: result[:status]
     end
@@ -45,7 +45,7 @@ class CategoriesController < ApplicationController
   def delete_category
     result = Category.delete_category(params[:category_id])
     if result[:status] == :ok
-      render json: { message: result[:message] }, status: :created
+      render json: { message: result[:message] }, status: :ok
     else
       render json: { message: result[:message] }, status: result[:status]
     end
