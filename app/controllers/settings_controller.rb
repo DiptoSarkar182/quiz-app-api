@@ -4,8 +4,7 @@ class SettingsController < ApplicationController
   before_action :check_token_expiration
 
   def index
-    # Fetch the current user's settings
-    @settings = current_user.setting
+    @settings = Setting.current_user_settings(current_user)
 
     if @settings
       render json: @settings, status: :ok
@@ -15,12 +14,12 @@ class SettingsController < ApplicationController
   end
 
   def update_settings
-    @settings = current_user.setting
+    result = Setting.current_user_update_settings(current_user, settings_params)
 
-    if @settings.update(settings_params)
-      render json: { message: "Settings Updated" }, status: :ok
+    if result[:status] == :ok
+      render json: { message: result[:message] }, status: :ok
     else
-      render json: { message: "Failed to update settings", errors: @settings.errors.full_messages }, status: :unprocessable_entity
+      render json: { message: result[:message], errors: result[:errors] }
     end
   end
 

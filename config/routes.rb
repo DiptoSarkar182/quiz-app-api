@@ -21,12 +21,8 @@ Rails.application.routes.draw do
   # leaderboards routes
   resources :leaderboards, only: [] do
     collection do
-      get :monthly_top_three_users
-      get :monthly_leaderboards
-      get :weekly_top_three_users
-      get :weekly_leaderboards
-      get :daily_top_three_users
-      get :daily_leaderboards
+      get :top_three_users, path: "top-three"
+      get :leaderboards, path: "all"
     end
   end
 
@@ -46,6 +42,7 @@ Rails.application.routes.draw do
       get :current_user_sent_friend_requests
       get :current_user_received_friend_requests
       delete :decline_friend_request
+      get :find_friend
     end
   end
 
@@ -53,7 +50,7 @@ Rails.application.routes.draw do
   resources :categories
 
   # sub_categories routes
-  resources :sub_categories, only: [:index] do
+  resources :sub_categories, only: [:index, :create] do
     collection do
       get :top_sub_categories
     end
@@ -73,9 +70,6 @@ Rails.application.routes.draw do
       delete :unfollow
     end
   end
-
-  # find friends routes
-  resources :find_friends
 
   # otp routes
   namespace :users do

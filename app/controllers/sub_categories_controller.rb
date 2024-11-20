@@ -4,24 +4,37 @@ class SubCategoriesController < ApplicationController
   before_action :check_token_expiration
 
   def index
-    category_id = params[:category_id]
-    category = Category.find_by(id: category_id)
+    result = SubCategory.sub_categories_for_category(params[:category_id])
 
-    if category
-      sub_categories = category.sub_categories
-      render json: sub_categories, status: :ok
+    if result[:status] == :ok
+      render json: result[:data], status: :ok
     else
-      render json: { error: "Category not found" }, status: :not_found
+      render json: { message: result[:message] }, status: result[:status]
+    end
+  end
+
+  def create
+    result = SubCategory.create_sub_category(sub_category_params)
+
+    if result[:status] == :ok
+      render json: { message: result[:message], data: result[:data] }, status: :created
+    else
+      render json: { message: result[:message] }, status: result[:status]
     end
   end
 
   def top_sub_categories
-    @top_sub_categories = SubCategory.where("total_follower > 0").order(total_follower: :desc).limit(10)
+    result = SubCategory.top_sub_categories_list
 
-    if @top_sub_categories.any?
-      render json: @top_sub_categories, status: :ok
+    if result.any?
+      render json: result, status: :ok
     else
       render json: { message: "No top sub category" }, status: :ok
     end
+  end
+
+  private
+  def sub_category_params
+    params.require(:sub_category).permit(:category_id, :title)
   end
 end
