@@ -47,12 +47,21 @@ Rails.application.routes.draw do
   end
 
   # categories routes
-  resources :categories
+  resources :categories, only: [:index, :create] do
+    collection do
+      get :show_category
+      patch :update_category
+      delete :delete_category
+    end
+  end
 
   # sub_categories routes
   resources :sub_categories, only: [:index, :create] do
     collection do
       get :top_sub_categories
+      get :show_sub_category
+      patch :update_sub_category
+      delete :delete_sub_category
     end
   end
 
@@ -88,9 +97,11 @@ Rails.application.routes.draw do
   resources :user_profile_infos
 
   # sub category quizzes routes
-  resources :sub_category_quizzes, only: [:index] do
+  resources :sub_category_quizzes, only: [:index, :create] do
     collection do
       post :answer
+      patch :update_sub_category_quiz
+      delete :delete_sub_category_quiz
     end
   end
 end
