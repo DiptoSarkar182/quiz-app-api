@@ -1,4 +1,15 @@
 Rails.application.routes.draw do
+  devise_for :admins, path: "admin", path_names: {
+    sign_in: "login",
+    sign_out: "logout",
+    registration: "signup"
+  },
+             controllers: {
+               sessions: "admins/sessions",
+               registrations: "admins/registrations",
+               passwords: "admins/passwords",
+             }
+
   devise_for :users, path: "", path_names: {
     sign_in: "login",
     sign_out: "logout",
@@ -9,6 +20,26 @@ Rails.application.routes.draw do
                registrations: "users/registrations",
                passwords: "users/passwords",
              }
+
+  # otp routes for normal user
+  namespace :users do
+    resources :confirmations, only: [] do
+      collection do
+        post :validate_otp
+        post :resend_otp
+      end
+    end
+  end
+
+  # otp routes for admin user
+  namespace :admins do
+    resources :confirmations, only: [] do
+      collection do
+        post :validate_otp
+        post :resend_otp
+      end
+    end
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -77,16 +108,6 @@ Rails.application.routes.draw do
     collection do
       post :follow
       delete :unfollow
-    end
-  end
-
-  # otp routes
-  namespace :users do
-    resources :confirmations, only: [] do
-      collection do
-        post :validate_otp
-        post :resend_otp
-      end
     end
   end
 
