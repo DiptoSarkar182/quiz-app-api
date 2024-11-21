@@ -29,6 +29,11 @@ Rails.application.routes.draw do
         post :resend_otp
       end
     end
+    resources :passwords, only: [] do
+      collection do
+        post :verify_otp
+      end
+    end
   end
 
   # otp routes for admin user

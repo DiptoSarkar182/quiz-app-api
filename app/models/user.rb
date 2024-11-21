@@ -25,6 +25,18 @@ class User < ApplicationRecord
     UserMailer.confirmation_instructions(self, self.confirmation_token).deliver_now
   end
 
+  def send_reset_password_otp
+    token = SecureRandom.random_number(10**OTP_LENGTH).to_s.rjust(OTP_LENGTH, "0")
+    self.reset_password_token = token
+    self.reset_password_sent_at = Time.now.utc
+    save(validate: false)
+    UserMailer.reset_password_instruction(self, self.reset_password_token).deliver_now
+  end
+
+  def verify_reset_password_otp(otp)
+    self.reset_password_token == otp && self.reset_password_sent_at >= 5.minutes.ago
+  end
+
   # Association
   has_one :leaderboard, dependent: :destroy
   has_one :setting, dependent: :destroy
