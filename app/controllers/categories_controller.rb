@@ -1,6 +1,6 @@
 class CategoriesController < ApplicationController
-
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :index, :show_category ]
+  before_action :authenticate_admin!, only: [ :create, :update_category, :delete_category ]
   before_action :check_token_expiration
 
   def index
@@ -9,7 +9,7 @@ class CategoriesController < ApplicationController
     if @categories.any?
       render json: @categories, status: :ok
     else
-      render json: {message: "Categories not found"}, status: 404
+      render json: { message: "Categories not found" }, status: 404
     end
   end
 
@@ -59,5 +59,4 @@ class CategoriesController < ApplicationController
   def update_category_params
     params.require(:category).permit(:category_id, :title)
   end
-
 end
