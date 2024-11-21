@@ -1,6 +1,6 @@
 class SubCategoriesController < ApplicationController
-
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :index, :show_sub_category, :top_sub_categories ]
+  before_action :authenticate_admin!, only: [ :create, :update_sub_category, :delete_sub_category ]
   before_action :check_token_expiration
 
   def index

@@ -1,5 +1,6 @@
 class SubCategoryQuizzesController < ApplicationController
-  before_action :authenticate_user!
+  before_action :authenticate_user!, only: [ :index, :answer ]
+  before_action :authenticate_admin!, only: [ :create, :update_sub_category_quiz, :delete_sub_category_quiz ]
   before_action :check_token_expiration
 
   def index
