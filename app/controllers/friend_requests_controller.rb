@@ -7,9 +7,18 @@ class FriendRequestsController < ApplicationController
     sent_requests = FriendRequest.current_user_sent_friend_requests(current_user)
 
     if sent_requests.any?
-      render json: sent_requests
+      sent_requests_with_profile_pictures = sent_requests.map do |request|
+        profile_picture_url = request.receiver.profile_picture.attached? ? url_for(request.receiver.profile_picture) : nil
+        {
+          id: request.id,
+          receiver_id: request.receiver_id,
+          full_name: request.receiver.full_name,
+          profile_picture_url: profile_picture_url
+        }
+      end
+      render json: sent_requests_with_profile_pictures, status: :ok
     else
-      render json: { message: "No sent requests" }
+      render json: { message: "No sent requests" }, status: :ok
     end
   end
 
@@ -17,9 +26,18 @@ class FriendRequestsController < ApplicationController
     received_requests = FriendRequest.current_user_received_friend_requests(current_user)
 
     if received_requests.any?
-      render json: received_requests
+      received_requests_with_profile_pictures = received_requests.map do |request|
+        profile_picture_url = request.sender.profile_picture.attached? ? url_for(request.sender.profile_picture) : nil
+        {
+          id: request.id,
+          sender_id: request.sender_id,
+          full_name: request.sender.full_name,
+          profile_picture_url: profile_picture_url
+        }
+      end
+      render json: received_requests_with_profile_pictures, status: :ok
     else
-      render json: { message: "No received request" }
+      render json: { message: "No received requests" }, status: :ok
     end
   end
 
@@ -58,7 +76,16 @@ class FriendRequestsController < ApplicationController
     @users = User.search_by_full_name_or_email(params[:query])
 
     if @users.any?
-      render json: @users.as_json(only: [:id, :full_name, :level])
+      users_with_profile_pictures = @users.map do |user|
+        profile_picture_url = user.profile_picture.attached? ? url_for(user.profile_picture) : nil
+        {
+          id: user.id,
+          full_name: user.full_name,
+          level: user.level,
+          profile_picture_url: profile_picture_url
+        }
+      end
+      render json: users_with_profile_pictures, status: :ok
     else
       render json: { message: "No user found" }, status: :not_found
     end

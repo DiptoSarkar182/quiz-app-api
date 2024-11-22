@@ -4,17 +4,11 @@ class FriendRequest < ApplicationRecord
   belongs_to :receiver, class_name: "User"
 
   def self.current_user_sent_friend_requests(user)
-    FriendRequestSerializers::SentFriendRequestSerializer
-      .new(user.sent_friend_requests)
-      .serializable_hash[:data]
-      .map { |request| request[:attributes] }
+    user.sent_friend_requests.includes(:receiver)
   end
 
   def self.current_user_received_friend_requests(user)
-    FriendRequestSerializers::ReceivedFriendRequestSerializer
-      .new(user.received_friend_requests)
-      .serializable_hash[:data]
-      .map { |request| request[:attributes] }
+    user.received_friend_requests.includes(:sender)
   end
 
   def self.create_request(sender, receiver_id)
