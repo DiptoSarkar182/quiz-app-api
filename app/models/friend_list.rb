@@ -4,9 +4,7 @@ class FriendList < ApplicationRecord
   belongs_to :friend, class_name: "User", foreign_key: 'friend_id'
 
   def self.current_user_friend_lists(user)
-    user.friends
-        .select("friend_lists.id AS id, friend_lists.user_id, users.id AS friend_id, users.full_name, users.level")
-        .order("users.full_name")
+    user.friends.order("users.full_name")
   end
 
   def self.add_friend_in_friend_lists(current_user, friend_id)
