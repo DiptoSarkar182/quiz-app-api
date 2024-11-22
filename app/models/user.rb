@@ -38,6 +38,7 @@ class User < ApplicationRecord
   end
 
   # Association
+  has_one_attached :profile_picture
   has_one :leaderboard, dependent: :destroy
   has_one :setting, dependent: :destroy
   has_many :sent_friend_requests, class_name: "FriendRequest", foreign_key: "sender_id", dependent: :destroy
