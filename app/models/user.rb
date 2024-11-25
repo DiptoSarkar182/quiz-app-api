@@ -57,6 +57,11 @@ class User < ApplicationRecord
     User.ransack(full_name_or_email_cont: query).result(distinct: true).select(:id, :full_name, :level)
   end
 
+  def profile_picture_url
+    # profile_picture.attached? ? url_for(profile_picture) : nil
+    profile_picture.url if profile_picture.attached?
+  end
+
   def self.get_profile_info(user_id)
     user = find_by(id: user_id)
     return nil unless user

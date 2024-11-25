@@ -7,18 +7,9 @@ class FriendRequestsController < ApplicationController
     sent_requests = FriendRequest.current_user_sent_friend_requests(current_user)
 
     if sent_requests.any?
-      sent_requests_with_profile_pictures = sent_requests.map do |request|
-        profile_picture_url = request.receiver.profile_picture.attached? ? url_for(request.receiver.profile_picture) : nil
-        {
-          id: request.id,
-          receiver_id: request.receiver_id,
-          full_name: request.receiver.full_name,
-          profile_picture_url: profile_picture_url
-        }
-      end
-      render json: sent_requests_with_profile_pictures, status: :ok
+      render json: sent_requests
     else
-      render json: { message: "No sent requests" }, status: :ok
+      render json: { message: "No sent requests" }
     end
   end
 
@@ -26,18 +17,9 @@ class FriendRequestsController < ApplicationController
     received_requests = FriendRequest.current_user_received_friend_requests(current_user)
 
     if received_requests.any?
-      received_requests_with_profile_pictures = received_requests.map do |request|
-        profile_picture_url = request.sender.profile_picture.attached? ? url_for(request.sender.profile_picture) : nil
-        {
-          id: request.id,
-          sender_id: request.sender_id,
-          full_name: request.sender.full_name,
-          profile_picture_url: profile_picture_url
-        }
-      end
-      render json: received_requests_with_profile_pictures, status: :ok
+      render json: received_requests
     else
-      render json: { message: "No received requests" }, status: :ok
+      render json: { message: "No received request" }
     end
   end
 

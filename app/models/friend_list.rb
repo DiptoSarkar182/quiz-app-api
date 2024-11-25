@@ -4,7 +4,8 @@ class FriendList < ApplicationRecord
   belongs_to :friend, class_name: "User", foreign_key: 'friend_id'
 
   def self.current_user_friend_lists(user)
-    user.friends.order("users.full_name")
+    friend_lists = user.friend_lists.includes(:friend)
+    FriendListSerializers::FriendListSerializer.new(friend_lists).serializable_hash[:data].map { |item| item[:attributes] }
   end
 
   def self.add_friend_in_friend_lists(current_user, friend_id)
@@ -36,8 +37,6 @@ class FriendList < ApplicationRecord
 
     { status: :ok, message: "Friend added successfully" }
   end
-
-
 
   def self.remove_friend_from_friend_lists(current_user, friend_id)
     friend_relationship = current_user.friend_lists.find_by(friend_id: friend_id)
