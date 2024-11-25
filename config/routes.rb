@@ -130,4 +130,13 @@ Rails.application.routes.draw do
       delete :delete_sub_category_quiz
     end
   end
+
+  resources :challenge_friends, only: [:index] do
+    collection do
+      get :sent_challenges
+      get :received_challenges
+      post :send_challenge
+      delete :cancel_challenge
+    end
+  end
 end
