@@ -2,7 +2,9 @@ class ChallengeFriend < ApplicationRecord
 
   belongs_to :challenger, class_name: 'User'
   belongs_to :challengee, class_name: 'User'
-  belongs_to :sub_category
+  belongs_to :sub_category, optional: true
+  validates :sub_category, presence: true, if: -> { challenge_type == 'single_subject' }
+  validates :challenge_type, presence: true
 
   def self.current_user_sent_challenges(user)
     sent_challenges = ChallengeFriend.where(challenger_id: user.id)
@@ -22,15 +24,17 @@ class ChallengeFriend < ApplicationRecord
 
   def self.send_challenge(user, params)
     friend = User.find_by(id: params[:friend_id])
-    sub_category = SubCategory.find_by(id: params[:sub_category_id])
 
     return { message: 'Friend not found', status: :not_found } if friend.nil?
     return { message: 'You cannot challenge yourself', status: :unprocessable_entity } if user == friend
     return { message: 'User not in your friend list', status: :unprocessable_entity } unless user.friends.include?(friend)
-    return { message: 'Subcategory not found', status: :not_found } if sub_category.nil?
-    existing_challenge = ChallengeFriend.find_by(challenger: user, challengee: friend, sub_category: sub_category)
-    if existing_challenge
-      return { message: 'You have already sent a challenge to this user with the same subcategory', status: :unprocessable_entity }
+
+    if params[:challenge_type] == 'single_subject'
+      sub_category = SubCategory.find_by(id: params[:sub_category_id])
+      return { message: 'Subcategory not found', status: :not_found } if sub_category.nil?
+
+      existing_challenge = ChallengeFriend.find_by(challenger: user, challengee: friend, sub_category: sub_category)
+      return { message: 'You have already sent a challenge to this user with the same subcategory', status: :unprocessable_entity } if existing_challenge
     end
 
     if user.coins < params[:amount_of_betting_coin].to_i
@@ -38,10 +42,10 @@ class ChallengeFriend < ApplicationRecord
     end
 
     ActiveRecord::Base.transaction do
-     ChallengeFriend.create!(
+      ChallengeFriend.create!(
         challenger: user,
         challengee: friend,
-        sub_category: sub_category,
+        sub_category: params[:challenge_type] == 'single_subject' ? sub_category : nil,
         amount_of_betting_coin: params[:amount_of_betting_coin],
         challenge_type: params[:challenge_type],
         number_of_questions: params[:number_of_questions]
@@ -54,6 +58,7 @@ class ChallengeFriend < ApplicationRecord
   rescue ActiveRecord::RecordInvalid => e
     { message: 'Failed to send challenge', status: :unprocessable_entity }
   end
+
 
   def self.cancel_challenge(user, challenge_id)
     challenge = ChallengeFriend.find_by(id: challenge_id, challenger: user, status: 'pending')

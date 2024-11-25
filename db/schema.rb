@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_25_094820) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_25_134153) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -79,7 +79,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_094820) do
   create_table "challenge_friends", force: :cascade do |t|
     t.bigint "challenger_id", null: false
     t.bigint "challengee_id", null: false
-    t.bigint "sub_category_id", null: false
+    t.bigint "sub_category_id"
     t.integer "amount_of_betting_coin", default: 0, null: false
     t.enum "challenge_type", null: false, enum_type: "challenge_type_enum"
     t.integer "number_of_questions", default: 0, null: false
