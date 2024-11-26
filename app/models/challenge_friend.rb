@@ -126,7 +126,7 @@ class ChallengeFriend < ApplicationRecord
   def self.reject_challenge_request(user, challenge_id)
     challenge = ChallengeFriend.find_by(id: challenge_id, challengee: user, status: 'pending')
 
-    return { message: 'Challenge not found or not eligible for rejection', status: :not_found } if challenge.nil?
+    return { message: 'Challenge not found', status: :not_found } if challenge.nil?
 
     ActiveRecord::Base.transaction do
       challenge.challenger.update!(coins: challenge.challenger.coins + challenge.amount_of_betting_coin)
