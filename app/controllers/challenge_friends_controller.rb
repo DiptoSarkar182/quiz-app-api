@@ -43,7 +43,23 @@ class ChallengeFriendsController < ApplicationController
   end
 
   def accept_challenge
+    result = ChallengeFriend.accept_challenge_request(current_user, params[:challenge_id])
 
+    if result[:status] == :ok
+      render json: { message: result[:message] }, status: :ok
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
+  end
+
+  def reject_challenge
+    result = ChallengeFriend.reject_challenge_request(current_user, params[:challenge_id])
+
+    if result[:status] == :ok
+      render json: { message: result[:message] }, status: :ok
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
   end
 
   private

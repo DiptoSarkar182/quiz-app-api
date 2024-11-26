@@ -101,4 +101,44 @@ class ChallengeFriend < ApplicationRecord
   rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
     { message: 'Failed to cancel challenge', status: :unprocessable_entity }
   end
+
+  def self.accept_challenge_request(user, challenge_id)
+    challenge = ChallengeFriend.find_by(id: challenge_id, challengee: user, status: 'pending')
+
+    return { message: 'Challenge not found or not eligible for acceptance', status: :not_found } if challenge.nil?
+
+    if user.coins < challenge.amount_of_betting_coin
+      return { message: 'Insufficient coins to accept this challenge', status: :unprocessable_entity }
+    end
+
+    ActiveRecord::Base.transaction do
+      user.update!(coins: user.coins - challenge.amount_of_betting_coin)
+      challenge.update!(status: 'accepted')
+    end
+
+    { message: 'Challenge accepted and coins deducted successfully', status: :ok }
+  rescue ActiveRecord::RecordInvalid => e
+    { message: 'Failed to accept challenge due to validation error', status: :unprocessable_entity }
+  rescue ActiveRecord::StatementInvalid => e
+    { message: 'Failed to accept challenge due to database error', status: :unprocessable_entity }
+  end
+
+  def self.reject_challenge_request(user, challenge_id)
+    challenge = ChallengeFriend.find_by(id: challenge_id, challengee: user, status: 'pending')
+
+    return { message: 'Challenge not found or not eligible for rejection', status: :not_found } if challenge.nil?
+
+    ActiveRecord::Base.transaction do
+      challenge.challenger.update!(coins: challenge.challenger.coins + challenge.amount_of_betting_coin)
+      challenge.update!(status: 'rejected')
+    end
+
+    { message: 'Challenge rejected successfully', status: :ok }
+  rescue ActiveRecord::RecordInvalid => e
+    { message: 'Failed to reject challenge due to validation error', status: :unprocessable_entity }
+  rescue ActiveRecord::StatementInvalid => e
+    { message: 'Failed to reject challenge due to database error', status: :unprocessable_entity }
+  end
+
+
 end

@@ -131,12 +131,15 @@ Rails.application.routes.draw do
     end
   end
 
+  # challenge_friend routes
   resources :challenge_friends, only: [:index] do
     collection do
       get :sent_challenges
       get :received_challenges
       post :send_challenge
       delete :cancel_challenge
+      patch :accept_challenge
+      patch :reject_challenge
     end
   end
 end
