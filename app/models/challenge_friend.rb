@@ -33,8 +33,34 @@ class ChallengeFriend < ApplicationRecord
       sub_category = SubCategory.find_by(id: params[:sub_category_id])
       return { message: 'Subcategory not found', status: :not_found } if sub_category.nil?
 
-      existing_challenge = ChallengeFriend.find_by(challenger: user, challengee: friend, sub_category: sub_category)
-      return { message: 'You have already sent a challenge to this user with the same subcategory', status: :unprocessable_entity } if existing_challenge
+      existing_pending_challenge = ChallengeFriend.where(
+        "(challenger_id = :user_id AND challengee_id = :friend_id) OR (challenger_id = :friend_id AND challengee_id = :user_id)",
+        {
+          user_id: user.id,
+          friend_id: friend.id
+        }
+      ).where(
+        sub_category: sub_category,
+        challenge_type: 'single_subject',
+        status: 'pending'
+      ).exists?
+
+      return { message: 'A pending challenge with this subcategory already exists between you and the user', status: :unprocessable_entity } if existing_pending_challenge
+    elsif params[:challenge_type] == 'global'
+      existing_pending_global_challenge = ChallengeFriend.where(
+        "(challenger_id = :user_id AND challengee_id = :friend_id) OR (challenger_id = :friend_id AND challengee_id = :user_id)",
+        {
+          user_id: user.id,
+          friend_id: friend.id
+        }
+      ).where(
+        challenge_type: 'global',
+        status: 'pending'
+      ).exists?
+
+      return { message: 'A pending global challenge already exists between you and the user', status: :unprocessable_entity } if existing_pending_global_challenge
+    else
+      return { message: 'Invalid challenge type', status: :unprocessable_entity }
     end
 
     if user.coins < params[:amount_of_betting_coin].to_i
@@ -48,12 +74,12 @@ class ChallengeFriend < ApplicationRecord
         sub_category: params[:challenge_type] == 'single_subject' ? sub_category : nil,
         amount_of_betting_coin: params[:amount_of_betting_coin],
         challenge_type: params[:challenge_type],
-        number_of_questions: params[:number_of_questions]
+        number_of_questions: params[:number_of_questions],
       )
 
       user.update!(coins: user.coins - params[:amount_of_betting_coin].to_i)
 
-      { message: 'Challenge sent successfully', status: :created }
+      { message: 'Challenge sent successfully', status: :ok }
     end
   rescue ActiveRecord::RecordInvalid => e
     { message: 'Failed to send challenge', status: :unprocessable_entity }
@@ -75,6 +101,4 @@ class ChallengeFriend < ApplicationRecord
   rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
     { message: 'Failed to cancel challenge', status: :unprocessable_entity }
   end
-
-
 end

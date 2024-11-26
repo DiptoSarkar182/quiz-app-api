@@ -25,7 +25,11 @@ class ChallengeFriendsController < ApplicationController
   def send_challenge
     result = ChallengeFriend.send_challenge(current_user, challenge_params)
 
-    render json: { message: result[:message], error: result[:error] }, status: result[:status]
+    if result[:status] == :ok
+      render json: { message: result[:message] }, status: :created
+    else
+      render json: { message: result[:message] }, status: result[:status]
+    end
   end
 
   def cancel_challenge
@@ -36,6 +40,10 @@ class ChallengeFriendsController < ApplicationController
     else
       render json: { message: result[:message] }, status: result[:status]
     end
+  end
+
+  def accept_challenge
+
   end
 
   private
