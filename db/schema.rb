@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_25_134153) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_26_125003) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -89,6 +89,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_134153) do
     t.index ["challengee_id"], name: "index_challenge_friends_on_challengee_id"
     t.index ["challenger_id"], name: "index_challenge_friends_on_challenger_id"
     t.index ["sub_category_id"], name: "index_challenge_friends_on_sub_category_id"
+  end
+
+  create_table "challenge_rooms", force: :cascade do |t|
+    t.bigint "challenge_friend_id", null: false
+    t.integer "total_question", null: false
+    t.integer "total_betting_coins", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["challenge_friend_id"], name: "index_challenge_rooms_on_challenge_friend_id"
   end
 
   create_table "friend_lists", force: :cascade do |t|
@@ -209,6 +218,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_25_134153) do
   add_foreign_key "challenge_friends", "sub_categories"
   add_foreign_key "challenge_friends", "users", column: "challengee_id"
   add_foreign_key "challenge_friends", "users", column: "challenger_id"
+  add_foreign_key "challenge_rooms", "challenge_friends"
   add_foreign_key "friend_lists", "users", column: "friend_id", on_delete: :cascade
   add_foreign_key "friend_lists", "users", on_delete: :cascade
   add_foreign_key "friend_requests", "users", column: "receiver_id"

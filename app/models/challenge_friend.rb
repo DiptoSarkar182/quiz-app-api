@@ -1,5 +1,6 @@
 class ChallengeFriend < ApplicationRecord
 
+  has_one :challenge_room, dependent: :destroy
   belongs_to :challenger, class_name: 'User'
   belongs_to :challengee, class_name: 'User'
   belongs_to :sub_category, optional: true
@@ -114,6 +115,9 @@ class ChallengeFriend < ApplicationRecord
     ActiveRecord::Base.transaction do
       user.update!(coins: user.coins - challenge.amount_of_betting_coin)
       challenge.update!(status: 'accepted')
+      ChallengeRoom.create!(challenge_friend: challenge,
+                            total_question: challenge.number_of_questions,
+                            total_betting_coins: challenge.amount_of_betting_coin * 2)
     end
 
     { message: 'Challenge accepted and coins deducted successfully', status: :ok }
