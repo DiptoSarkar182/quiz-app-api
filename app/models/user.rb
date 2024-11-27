@@ -14,7 +14,7 @@ class User < ApplicationRecord
 
     user = User.find_by(email: data['email'])
 
-    user ||= User.create(
+    user ||= User.new(
       email: data['email'],
       password: Devise.friendly_token[0, 20]
     )
@@ -24,6 +24,7 @@ class User < ApplicationRecord
 
     if provider == 'google_oauth2'
       user.full_name = data['name']
+      user.skip_confirmation!
     end
 
     user.save
