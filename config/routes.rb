@@ -143,4 +143,6 @@ Rails.application.routes.draw do
       patch :reject_challenge
     end
   end
+
+  resources :quiz_challenges
 end
