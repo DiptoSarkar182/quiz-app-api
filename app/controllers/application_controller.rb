@@ -27,7 +27,6 @@ class ApplicationController < ActionController::API
   end
 
   def authenticate_admin!
-    authenticate_user!
     token = request.headers["Authorization"]&.split(" ")&.last
     if token.present?
       decoded_token = JWT.decode(token, Rails.application.credentials.devise_jwt_secret_key!).first
