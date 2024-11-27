@@ -47,3 +47,6 @@ gem 'jsonapi-serializer'
 gem "faker", "~> 3.5"
 gem "letter_opener", group: :development
 gem "ransack", "~> 4.2"
+
+gem "omniauth", "~> 2.1"
+gem "omniauth-google-oauth2", "~> 1.2"

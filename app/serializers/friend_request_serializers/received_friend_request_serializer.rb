@@ -8,5 +8,9 @@ module FriendRequestSerializers
     attribute :full_name do |object|
       object.sender.full_name
     end
+
+    attribute :profile_picture_url do |object|
+      object.receiver.profile_picture_url
+    end
   end
 end

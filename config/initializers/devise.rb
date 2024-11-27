@@ -271,7 +271,16 @@ Devise.setup do |config|
   # ==> OmniAuth
   # Add a new OmniAuth provider. Check the wiki for more information on setting
   # up on your models and hooks.
-  # config.omniauth :github, 'APP_ID', 'APP_SECRET', scope: 'user,public_repo'
+  config.omniauth :google_oauth2,
+                  Rails.application.credentials.dig(:google_oauth, :client_id),
+                  Rails.application.credentials.dig(:google_oauth, :client_secret),
+                  {
+                    scope: 'userinfo.email, userinfo.profile',
+                    provider_ignores_state: true,
+                    # authorized_client_ids: Rails.application.credentials.dig(:google_oauth, :authorized_client_ids),
+                    skip_jwt: true # TODO: Evaluate this setting.
+                  }
+
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
@@ -314,11 +323,14 @@ Devise.setup do |config|
   config.jwt do |jwt|
     jwt.secret = Rails.application.credentials.devise_jwt_secret_key!
     jwt.dispatch_requests = [
-      ['POST', %r{^/login$}]
+      ['POST', %r{^/login$}],
+      ['POST', %r{^/auth/google_oauth2/callback$}],
+      ['GET', %r{^/auth/google_oauth2/callback$}]
     ]
     jwt.revocation_requests = [
       ['DELETE', %r{^/logout$}]
     ]
     jwt.expiration_time = 1.day.to_i
   end
+
 end
