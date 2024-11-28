@@ -144,5 +144,10 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :quiz_challenges
+  resources :quiz_challenges, only: [:index, :show, :create] do
+    collection do
+      patch :update_quiz_challenge
+      delete :delete_quiz_challenge
+    end
+  end
 end
