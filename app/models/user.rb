@@ -104,6 +104,22 @@ class User < ApplicationRecord
     }
   end
 
+  def decrement_coins!(amount)
+    raise ArgumentError, 'Amount must be positive' unless amount.positive?
+
+    if coins < amount
+      raise ActiveRecord::RecordInvalid, self.errors.add(:coins, 'Not enough coins')
+    end
+
+    update!(coins: coins - amount)
+  end
+
+  def increment_coins!(amount)
+    raise ArgumentError, 'Amount must be positive' unless amount.positive?
+
+    update!(coins: coins + amount)
+  end
+
   private
 
   def create_leaderboard_with_default_points
