@@ -6,6 +6,7 @@ class SubCategory < ApplicationRecord
   has_many :users, through: :sub_category_followers
   has_many :sub_category_leaderboards, dependent: :destroy
   has_many :sub_category_quizzes, dependent: :destroy
+  has_many :challenge_friends, dependent: :destroy
 
   def self.sub_categories_for_category(category_id)
     category = Category.find_by(id: category_id)

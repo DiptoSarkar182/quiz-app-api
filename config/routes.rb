@@ -19,6 +19,7 @@ Rails.application.routes.draw do
                sessions: "users/sessions",
                registrations: "users/registrations",
                passwords: "users/passwords",
+               omniauth_callbacks: "users/omniauth_callbacks",
              }
 
   # otp routes for normal user
@@ -27,6 +28,11 @@ Rails.application.routes.draw do
       collection do
         post :validate_otp
         post :resend_otp
+      end
+    end
+    resources :passwords, only: [] do
+      collection do
+        post :verify_otp
       end
     end
   end
@@ -123,6 +129,18 @@ Rails.application.routes.draw do
       post :answer
       patch :update_sub_category_quiz
       delete :delete_sub_category_quiz
+    end
+  end
+
+  # challenge_friend routes
+  resources :challenge_friends, only: [:index] do
+    collection do
+      get :sent_challenges
+      get :received_challenges
+      post :send_challenge
+      delete :cancel_challenge
+      patch :accept_challenge
+      patch :reject_challenge
     end
   end
 end

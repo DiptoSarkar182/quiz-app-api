@@ -16,17 +16,25 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def update
-    if resource.update_with_password(resource_params)
+    update_method = resource.provider.present? ? :update_without_password : :update_with_password
+
+    if resource.public_send(update_method, resource_params)
       render json: {
-        status: { code: 200, message: 'User information updated successfully.',
-                  data: UserSerializer.new(resource).serializable_hash[:data][:attributes] }
+        status: {
+          code: 200,
+          message: 'User information updated successfully.',
+          data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+        }
       }, status: :ok
     else
       render json: {
-        status: { message: "User information couldn't be updated. #{resource.errors.full_messages.to_sentence}" }
+        status: {
+          message: "User information couldn't be updated. #{resource.errors.full_messages.to_sentence}"
+        }
       }, status: :unprocessable_entity
     end
   end
+
 
 
 
@@ -50,6 +58,10 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def resource_params
-    params.require(:user).permit(:full_name, :email, :password, :password_confirmation, :current_password)
+    if resource.provider.present?
+      params.require(:user).permit(:full_name, :profile_picture)
+    else
+      params.require(:user).permit(:full_name, :email, :password, :password_confirmation, :current_password, :profile_picture)
+    end
   end
 end

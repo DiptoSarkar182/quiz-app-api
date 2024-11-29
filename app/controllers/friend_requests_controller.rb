@@ -58,7 +58,16 @@ class FriendRequestsController < ApplicationController
     @users = User.search_by_full_name_or_email(params[:query])
 
     if @users.any?
-      render json: @users.as_json(only: [:id, :full_name, :level])
+      users_with_profile_pictures = @users.map do |user|
+        profile_picture_url = user.profile_picture.attached? ? url_for(user.profile_picture) : nil
+        {
+          id: user.id,
+          full_name: user.full_name,
+          level: user.level,
+          profile_picture_url: profile_picture_url
+        }
+      end
+      render json: users_with_profile_pictures, status: :ok
     else
       render json: { message: "No user found" }, status: :not_found
     end
